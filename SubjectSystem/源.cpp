@@ -28,20 +28,27 @@ public:
 	void InputGrade(int a){
 		this->grade=a;
 	}
-	void input();
-	string number;
+	void input();				//用于输入姓名和学号
+	void inputNumber();			//只输入学号查找
 private:
 	string name;
+	string number;
 	int grade;
 	bool choice;
 };
 
 void Student::input(){
-	cout<<"请输入学生姓名"<<endl;
+	cout<<"请输入学生姓名:"<<endl;
 	cin>>this->name;
-	cout<<"请输入学号"<<endl;
+	cout<<"请输入学号:"<<endl;
 	cin>>this->number;
 }
+
+void Student::inputNumber(){
+	cout<<"请输入学号:"<<endl;
+	cin>>this->number;
+}
+
 
 class MenuItem{
 public:
@@ -112,7 +119,7 @@ public:
 
 class getGrade:public MenuItem{
 public:
-	getGrade():MenuItem("学生选课"){}
+	getGrade():MenuItem("输入成绩"){}
 	bool act(){
 		operators.grad();
 		return false;
@@ -170,23 +177,24 @@ void Menu::show(){
 }
 
 void Operator::list(){
-	cout<<"----------------------------查看学生信息----------------------------"<<endl<<endl;
-	cout<<"学生姓名\t"<<"学号\t"<<"是否选课（1代表选，0代表没选）\t"<<"成绩\t"<<endl;
+	cout<<"--------------------------------查看学生信息--------------------------------"<<endl<<endl;
+	cout<<"学生姓名\t"<<"学号\t\t"<<"是否选课（1代表选，0代表没选）\t\t"<<"成绩\t"<<endl;
 	for(int i=0; i<this->students.size(); i++){
         cout<<this->students[i]->getName()<<"\t";
-		cout<<this->students[i]->getNumber()<<"\t";
-		cout<<this->students[i]->getChoice()<<"\t";
+		cout<<this->students[i]->getNumber()<<"\t\t\t";
+		cout<<this->students[i]->getChoice()<<"\t\t\t";
 		cout<<this->students[i]->getGrade()<<"\t";
     }
 	cout<<endl;
-    cout<<"----------------------------查看学生信息----------------------------"<<endl<<endl;
+    cout<<"--------------------------------查看学生信息--------------------------------"<<endl<<endl;
 
 }
 
 void Operator::add(){
 	int a;
 	do{
-	cout<<"请输入学生信息"<<endl;
+	cout<<"--------------------------------请输入学生信息--------------------------------"<<endl;
+	cout<<endl;
 	Student* temp = new Student;
     temp->input();
     Student* result = this->find(temp);
@@ -196,21 +204,23 @@ void Operator::add(){
     }else{
        cout<<"该学生已存在"<<endl;
     }
-	cout<<"继续请按1，否则按0"<<endl;
-	cin>>a;
+		cout<<"继续请按1，否则按0"<<endl;
+		cin>>a;
+		
 	}while(a);
 }
 
 void Operator::sele(){
 	bool select;
-	cout<<"请输入学生信息"<<endl;
+	cout<<"--------------------------------请输入学生信息--------------------------------"<<endl;
+	cout<<endl;
 	Student* temp = new Student;
-    temp->input();
+    temp->inputNumber();
     Student* result = this->find(temp);
     if(result == NULL){
 		cout<<"该学生不存在！请先输入该学生的信息！"<<endl;
     }else{
-		cout<<"请检查学生信息"<<endl;
+		cout<<"--------------------------------请检查学生信息--------------------------------"<<endl;
 		cout<<"学生姓名："<<result->getName()<<endl;
 		cout<<"学号："<<result->getNumber()<<endl;
 		cout<<"是否选课："<<result->getChoice()<<endl;
@@ -223,14 +233,19 @@ void Operator::sele(){
 
 void Operator::grad(){
 	int grade;
-	cout<<"请输入学生信息"<<endl;
+	cout<<"--------------------------------请输入学生信息--------------------------------"<<endl;
+	cout<<endl;
 	Student* temp = new Student;
-    temp->input();
+    temp->inputNumber();
     Student* result = this->find(temp);
     if(result == NULL){
 		cout<<"该学生不存在！请先输入该学生的信息！"<<endl;
     }else{
-		cout<<"请检查学生信息"<<endl;
+		if(!result->getChoice())
+			cout<<"该学生没有选课，无法输入成绩！"<<endl;
+		else
+		{
+		cout<<"--------------------------------请检查学生信息--------------------------------"<<endl;
 		cout<<"学生姓名："<<result->getName()<<endl;
 		cout<<"学号："<<result->getNumber()<<endl;
 		cout<<"是否选课："<<result->getChoice()<<endl;
@@ -238,12 +253,13 @@ void Operator::grad(){
 		cout<<"请输入学生成绩"<<endl;
 		cin>>grade;
 		result->InputGrade(grade);
+		}
 	}
 }
 
 Student* Operator::find(Student* sudents){
 	for(int i=0; i<this->students.size(); i++){
-		if(sudents->number==students[i]->number)
+		if(sudents->getNumber()==students[i]->getNumber())
 			return students[i];
 	}
         return NULL;
